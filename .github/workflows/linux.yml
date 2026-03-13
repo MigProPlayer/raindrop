@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_EXPORT }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -34,10 +36,8 @@ jobs:
       run: npm run build:linux -- --publish never
 
     - name: publish snap amd64
-      if: secrets.SNAPCRAFT_EXPORT != ''
+      if: ${{ env.SNAPCRAFT_STORE_CREDENTIALS != '' }}
       uses: snapcore/action-publish@v1
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_EXPORT }}
       with:
         snap: "${{ github.workspace }}/dist/Raindrop-amd64.snap"
         release: stable
